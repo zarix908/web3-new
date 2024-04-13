@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html>
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -8,16 +8,606 @@
 
 		<link rel="stylesheet" href="dist/reset.css">
 		<link rel="stylesheet" href="dist/reveal.css">
-		<link rel="stylesheet" href="dist/theme/black.css">
+		<link rel="stylesheet" href="dist/theme/white.css" id="theme">
 
 		<!-- Theme used for syntax highlighted code -->
-		<link rel="stylesheet" href="plugin/highlight/monokai.css">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/default.min.css">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+
+		<!-- and it's easy to individually load additional languages -->
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/go.min.js"></script>
+
+		<script>hljs.highlightAll();</script>
 	</head>
 	<body>
 		<div class="reveal">
 			<div class="slides">
-				<section>Slide 1</section>
-				<section>Slide 2</section>
+				<section class="slide1">
+					<h2>Web v3.0</h2>
+					<p>Данияр Хайрутдинов</p>
+					<div style="display: flex; height: 80px; justify-content: center; align-items: center; 
+						font-size: 20px;">
+						<img src="./assets/telegram.png" width="32px" height="32px">
+						<a href="https://t.me/zarix908_dev">Tg-канал zarix908</a>
+					</div>
+					<div style="display: flex; height: 80px; justify-content: center; align-items: center; 
+						font-size: 20px; margin-top: 5px">
+						<img src="./assets/avito.png" height="32px" style="margin: 0 5px;">
+						<a href="https://t.me/zarix908_dev">Avito</a>
+					</div>
+				</section>
+				<section>
+					<h2>CSRF</h2>
+					<p>(Cross-Site Request Forgery)</p>
+				</section>
+				<section>
+					<img src="./assets/owaspm.png" alt="csrf owasp" width="600px">
+				</section>
+				<section>
+					<img src="assets/csrf/auth.png" alt="csrf scheme" width="1000px">
+				</section>
+				<section>
+					<img src="assets/csrf/teapot.png" alt="csrf scheme" width="1000px">
+				</section>
+				<section>
+					<img src="assets/csrf/csrf.png" alt="csrf scheme" width="1000px">
+				</section>
+				<section>
+					<img src="assets/csrf/cors_deny.png" alt="csrf scheme" width="1000px">
+				</section>
+				<section>
+					<h2>Same origin policy (SOP)</h2>
+					<img src="assets/csrf/origin.png" alt="csrf scheme" width="1000px">
+				</section>
+				<section>
+					<span>origin: (protocol, host, port)</span>
+					<img src="./assets/origin.png" alt="same origin table" width="900px">
+				</section>
+				<section>
+					<img src="assets/csrf/cors_allow.png" alt="csrf scheme" width="1000px">
+				</section>
+				<section>
+					<pre><code data-trim data-noescape>
+					@app.route('/like', methods=['POST'])
+					def like():
+						id = request.form['id']
+						...
+				  	</code></pre>
+				</section>
+				<section>
+					<pre class="html"><code data-trim data-noescape>
+					&lt;form action="/like" method="POST"&gt;
+						&lt;label for="#idfield"&gt;post id:&lt;/label&gt;
+						&lt;input name="id" id="#idfield" /&gt;
+						&lt;input type="submit" value="Like!" /&gt;
+					&lt;/form&gt;
+				  	</code></pre>
+					<div>
+						<label class="label" for="#idfield">post id:</label>
+						<input name="id" id="#idfield" />
+						<button onclick="handleNormalClick()">Like!</button>
+					</div>
+				</section>
+				<section>
+					<pre class="html"><code data-trim data-noescape data-line-numbers="4">
+					&lt;form action="/like" method="POST"&gt;
+						&lt;label for="#idfield"&gt;post id:&lt;/label&gt;
+						&lt;input name="name" id="#idfield" /&gt;
+						&lt;input name="id" type="hidden" value="465" /&gt;
+						&lt;input type="submit" value="OK" /&gt;
+					&lt;/form&gt;
+				  	</code></pre>
+					<div>
+						<label class="label" for="#idfield1">name:</label>
+						<input name="name" id="#idfield1" />
+						<input name="id" type="hidden" value="465" />
+						<button onclick="handleMalwareClick()">OK</button>
+					</div>
+				</section>
+				<section class="slide8">
+					<img src="./assets/facebook.jpg" alt="facebook" width="400px">
+					<ul>
+						<li>
+							наличие у пользователя друзей с определенным именем или ключевым
+							словом в названии профиля
+						</li>
+						<li>
+							каким страницам ставил лайки пользователь, и в каких группах он состоит
+						</li>
+						<li>
+							есть ли у него друзья, подписанные на определенную страницу
+						</li>
+						<li>
+							наличие фото из определенных локаций или стран
+						</li>
+						<li>
+							публиковал ли пользователь записи, содержащие определенные ключевые слова
+						</li>
+						<li>
+							есть ли у него друзья определенного вероисповедания
+						</li>
+					</ul>
+				</section>
+				<section>
+					<pre class="javascript"><code data-trim data-noescape>
+						function didLike() {
+						  if (fb == null) {
+						    fb = window.open("", "", "width=100");
+						  }
+
+						  fb.location = "https://www.facebook.com/search/str/" +
+						  	+ encodeURIComponent(page.value) +
+							+ "/pages-name/me/pages-liked/intersect";
+
+						  setTimeout(function () {
+						    const answer = fb.frames.length === 0 ? "No" : "Yes";
+							console.log(answer);
+						  }, 5000);
+						}
+				  	</code></pre>
+				</section>
+				<section>
+					<h2>Защита от CSRF</h2>
+				</section>
+				<section>
+					<h3>CSRF token</h3>
+					<ul>
+						<li>synchronizer (statefull)</li>
+						<li>double submit cookie (stateless)</li>
+						<li>encrypted (stateless)</li>
+					</ul>
+				</section>
+				<section>
+					<h3>synchronizer token</h3>
+					<ol>
+						<li>генерация токена на сервере и сохранение</li>
+						<li>отправка токена клиенту через html или http header</li>
+						<li>отправка токена на сервер вручную в запросе</li>
+						<li>сверка с сохраненным токеном</li>
+					</ol>
+				</section>
+				<section>
+					<pre class="html"><code data-trim data-noescape data-line-numbers="4">
+					&lt;form action="/like" method="POST"&gt;
+					  &lt;label for="#idfield"&gt;post id:&lt;/label&gt;
+					  &lt;input name="id" id="#idfield" /&gt;
+					  &lt;input type="hidden" value="a3704352-..51e" /&gt;
+					  &lt;input type="submit" value="Like!" /&gt;
+					&lt;/form&gt;
+				  	</code></pre>
+				</section>
+				<section>
+					<h3>synchronizer token</h3>
+					<span>Недостатки:</span>
+					<ul>
+						<li>плохая масштабируемость</li>
+						<li>
+							получив токен можно пользоваться им до тех пор пока не истечет сессия
+						</li>
+					</ul>
+				</section>
+				<section>
+					<h3>double submit cookie token</h3>
+					<ol>
+						<li>генерация токена на сервере <b>без сохранения</b></li>
+						<li>
+							отправка токена клиенту через html или http header,
+							<b>а также в куках</b>
+						</li>
+						<li>отправка токена на сервер вручную в запросе и автоматически с куками</li>
+						<li>сверка токена, отправленного вручную, с отправленным в куках</li>
+					</ol>
+				</section>
+				<section>
+					<h3>double submit cookie token</h3>
+					<span>Недостатки:</span>
+					<ul>
+						<li>
+							поддомены могут читать cookie основного домена, если явно это не запрещать
+						</li>
+					</ul>
+				</section>
+				<section>
+					<h3>encrypted token</h3>
+					<ol>
+						<li>
+							токен генерируется посредством шифрования (id пользователя вместе с timestamp)
+						</li>
+						<li>
+							отправка токена клиенту через html или http header</li>
+						<li>отправка токена на сервер вручную в запросе</li>
+						<li>расшифровка токена и сопоставление id и timestamp</li>
+					</ol>
+				</section>
+				<section>
+					<h3>encrypted token</h3>
+					<span>Недостатки: нет</span>
+				</section>
+				<section>
+					<h3>Условия защиты от CSRF</h3>
+					<ul>
+						<li>отсутствие XSS</li>
+						<li>правильная настройка CORS</li>
+					</ul>
+				</section>
+				<section>
+					<h3>Итоги</h3>
+					<ul>
+						<li>CSRF клиентская уязвимость</li>
+						<li>все из-за того, что браузер прикрепляет cookie к любым запросам</li>
+						<li>защищаться нужно токенами</li>
+					</ul>
+				</section>
+				<section>
+					<h2>XXE (XML external entity)</h2>
+				</section>				
+				<section>
+					<img src="./assets/xxe_owasp.png" alt="xxe owasp" width="600px">
+				</section>
+				<section>
+					<img src="./assets/xxe_scheme.png" alt="xxe scheme" width="800px">
+				</section>
+				<section>
+					<pre class="php"><code data-trim data-noescape>
+					&lt;?php
+					  libxml_disable_entity_loader (false);
+					  $xmlfile = file_get_contents('php://input');
+					  $dom = new DOMDocument();
+					  $dom->loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD);
+					  $creds = simplexml_import_dom($dom);
+					  $user = $creds->user;
+					  $pass = $creds->pass;
+					  // ...
+					  if (...) { echo "You have logged in as user $user"; }
+					  else {
+						echo "error";
+					  }
+					?&gt;
+				  	</code></pre>
+					<pre class="xml"><code data-trim data-noescape>
+					&lt;creds&gt;
+					  &lt;user&gt;user&lt;/user&gt;
+					  &lt;pass&gt;pass&lt;/pass&gt;
+					&lt;/creds&gt;
+				  	</code></pre>
+				</section>
+				<section>
+					<h6>read file</h6>
+					<pre class="php"><code data-trim data-noescape>
+					&lt;?php
+					  libxml_disable_entity_loader (false);
+					  $xmlfile = file_get_contents('php://input');
+					  $dom = new DOMDocument();
+					  $dom->loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD);
+					  $creds = simplexml_import_dom($dom);
+					  $user = $creds->user;
+					  $pass = $creds->pass;
+					  // ...
+					?&gt;
+				  	</code></pre>
+					<pre class="xml"><code data-trim data-noescape>
+					&lt;source lang="xml"&gt;
+					&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+					&lt;!DOCTYPE foo [ &lt;!ELEMENT foo ANY &gt;
+					&lt;!ENTITY xxe SYSTEM "file:///etc/passwd" &gt;]&gt;
+					&lt;creds&gt;
+					  &lt;user&gt;&amp;xxe;&lt;/user&gt;
+					  &lt;pass&gt;pass&lt;/pass&gt;
+					&lt;/creds&gt;
+				  	</code></pre>
+				</section>
+				<section>
+					<h6>RCE</h6>
+					<pre class="php"><code data-trim data-noescape>
+					&lt;?php
+					  libxml_disable_entity_loader (false);
+					  $xmlfile = file_get_contents('php://input');
+					  $dom = new DOMDocument();
+					  $dom->loadXML($xmlfile, LIBXML_NOENT | LIBXML_DTDLOAD);
+					  $creds = simplexml_import_dom($dom);
+					  $user = $creds->user;
+					  $pass = $creds->pass;
+					  // ...
+					?&gt;
+				  	</code></pre>
+					<pre class="xml"><code data-trim data-noescape>
+					&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+					&lt;!DOCTYPE foo [ &lt;!ELEMENT foo ANY &gt;
+					&lt;!ENTITY xxe SYSTEM "expect://ls" &gt;]&gt;
+					&lt;creds&gt;
+					  &lt;user&gt;&amp;xxe;&lt;/user&gt;
+					  &lt;pass&gt;pass&lt;/pass&gt;
+					&lt;/creds&gt;
+				  	</code></pre>
+				</section>
+				<section>
+					<img src="./assets/xxe_ssrf.png" alt="xxe ssrf scheme" width="461px">
+				</section>
+				<section>
+					<h6>xxe ssrf</h6>
+					<img src="./assets/xxe_ssrf.png" alt="xxe ssrf scheme" width="300px">
+					<pre class="xml"><code data-trim data-noescape>
+					&lt;?xml version="1.0" encoding="ISO-8859-1"?&gt;
+					&lt;!DOCTYPE foo [ &lt;!ELEMENT foo ANY &gt;
+					&lt;!ENTITY xxe SYSTEM "http://internal.com" &gt;]&gt;
+					&lt;creds&gt;
+					  &lt;user&gt;&amp;xxe;&lt;/user&gt;
+					  &lt;pass&gt;pass&lt;/pass&gt;
+					&lt;/creds&gt;
+					</code></pre>
+				</section>
+				<section>
+					<h6>No doctype access</h6>
+					<pre class="xml"><code data-trim data-noescape>
+					&lt;foo xmlns:xi="http://www.w3.org/2001/XInclude"&gt;
+					&lt;xi:include parse="text" href="file:///etc/passwd"/&gt;&lt;/foo&gt;
+					</code></pre>
+				</section>
+				<section>
+					<h3>Итоги</h3>
+					<ul>
+						<li>XXE серверная уязвимость</li>
+						<li>можно читать файлы, получать RCE, эксплуатировать SSRF</li>
+						<li>защищаться можно экранированием и отключением опасных функции</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Хэши</h2>
+				</section>
+				<section>
+					<pre class="csharp"><code data-trim data-noescape>
+						public class MyClass {
+						  public override bool Equals(object obj)
+						  {
+						    // ...
+						  }
+
+						  public override int GetHashCode()
+						  {
+						    // ...
+						  }
+						}
+					</code></pre>
+				</section>
+				<section>
+					<img src="./assets/collision.jpg" alt="collision" width="800px">
+				</section>
+				<section>
+					<img src="./assets/hash_collision.png" alt="hash collision">
+				</section>
+				<section>
+					<h3>хэш функции</h3>
+					<ol class="hashes">
+						<li>MD4</li>
+						<li>MD5</li>
+						<li>SHA-1</li>
+						<li>SHA-2 (SHA-224, SHA-256, SHA-384, SHA-512, SHA-512/256 и SHA-512/224)</li>
+						<li>SHA-3</li>
+					</ol>
+				</section>
+				<section>
+					<h2>MD5</h2>
+					<ul>
+						<li>
+							<img src="./assets/md5_block.png" alt="md5 scheme" width="600px">
+						</li>
+						<li>
+							md5(secret + data) = md5(secret + data + padding),
+							где padding - блок нулей
+						</li>
+						<li>state = [A B C D], где ABCD - 32 битные числа</li>
+						<li>
+							f(<span class="s_red">init_state</span>, block_1) =
+								<span class="s_blue">state</span><br>
+							f(<span class="s_blue">state</span>, block_2) =
+								<span class="s_green">new_state</span><br>
+							...
+						</li>
+					</ul>
+				</section>
+				<section>
+					<h2>HLE(hash length extension)</h2>
+				</section>
+				<!-- normal -->
+				<section>
+					<img src="./assets/hle_service/normal/pizza1.png" alt="pizza1" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/normal/pizza2.png" alt="pizza2" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/normal/pizza3.png" alt="pizza3" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/normal/pizza4.png" alt="pizza4" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/normal/pizza5.png" alt="pizza5" width="750px">
+				</section>
+				<!-- hacked -->
+				<section>
+					<img src="./assets/hle_service/normal/pizza1.png" alt="pizza1" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/normal/pizza2.png" alt="pizza2" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/hacked/pizza3.png" alt="pizza3" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/normal/pizza5.png" alt="pizza5" width="750px">
+				</section>
+				<!-- signed -->
+				<section>
+					<img src="./assets/hle_service/signed/pizza0.png" alt="pizza0" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/normal/pizza1.png" alt="pizza1" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/signed/pizza2.png" alt="pizza2" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/signed/pizza3.png" alt="pizza3" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/signed/pizza4.png" alt="pizza4" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/signed/pizza5.png" alt="pizza5" width="750px">
+				</section>
+				<section>
+					<img src="./assets/hle_service/signed/pizza6.png" alt="pizza6" width="750px">
+				</section>
+				<section>
+					<dl>
+						<dt>pay_msg</dt>
+						<dd>
+							transaction_id=2778&price=10$
+						</dd>
+						<dt>sign</dt>
+						<dd>md5(secret + pay_msg)</dd>
+					</dl>
+					<p>
+						state = md5(secret + pay_msg) = sign
+					</p>
+				</section>
+				<section>
+					<ul>
+						<li>
+							md5(secret + data) == md5(secret + data + padding),
+							где padding - блок нулей
+						</li>
+						<li>
+							f(<span class="s_blue">state</span>, block) =
+							<span class="s_green">new_state</span><br>
+						</li>
+					</ul>
+					<p>
+						state = md5(secret + pay_msg) = (secret + pay_msg + padding) = sign
+					</p>
+					<p>
+						new_state = f(state, new_data_block)
+					</p>
+				</section>
+				<section>
+					<dl>
+						<dt>secret</dt>
+						<dd>c63ae93c-4e9f-4416-b40e-b807e9b94ab8</dd>
+						<dt>pay_msg</dt>
+						<dd>
+							transaction_id=2778&price=10$
+						</dd>
+						<dt>sign</dt>
+						<dd>5a32fa9dac3cfff7ea63c9c9167620b0</dd>
+						<dt>append data</dt>
+						<dd>&price=1$</dd>
+						<dt>sign</dt>
+						<dd>?</dd>
+					</dl>
+				</section>
+				<section>
+					new_pay_msg = <span class="s_red">c63ae93c-4e9f-4416-b40e-b807e9b94ab8transaction_id=2778&price=10$</span>
+				</section>
+				<section>
+					new_pay_msg = <span class="s_red">c63ae93c-4e9f-4416-b40e-b807e9b94ab8transaction_id=2778&price=10$</span>
+					<span>
+						\x80\x00\x00\x00\x00\x00\x00\x00
+						\x00\x00\x00\x00\x00\x00\x00\x00
+						\x00\x00\x00\x00\x00\x00\x00\x00
+						\x00\x00\x00\x00\x00\x00\x00\x00
+						\x00\x00\x00\x00\x00\x00\x00\x00
+						\x00\x00\x00\x00\x00\x00\x00\x00
+						\x00\x00\x00\x00\x00\x00\x00
+						<span class="s_red">\x08\x02\x00\x00\x00\x00\x00\x00</span>
+					</span>
+				</section>
+				<section>
+					<p>
+						new_pay_msg = <span class="s_red">c63ae93c-4e9f-4416-b40e-b807e9b94ab8transaction_id=2778&price=10$</span>
+						<span>
+							\x80\x00\x00\x00\x00\x00\x00\x00
+							\x00\x00\x00\x00\x00\x00\x00\x00
+							\x00\x00\x00\x00\x00\x00\x00\x00
+							\x00\x00\x00\x00\x00\x00\x00\x00
+							\x00\x00\x00\x00\x00\x00\x00\x00
+							\x00\x00\x00\x00\x00\x00\x00\x00
+							\x00\x00\x00\x00\x00\x00\x00
+							<span class="s_red">\x08\x02\x00\x00\x00\x00\x00\x00</span>
+						</span>
+						<span class="s_green">
+							&price=1$
+						</span>
+					</p>
+				</section>
+				<section>
+					<h2>Итоги</h2>
+					<ul>
+						<li>На блочные hash-функции может быть проведена атака HLE</li>
+						<li>Необходимо знать длину секрета и хэш от "старого" сообщения</li>
+						<li>Для защиты нужно использовать функцию HMAC</li>
+					</ul>
+				</section>
+				<section>
+					<h2>Опасный JS</h2>
+				</section>
+				<section>
+					<h3>деструктуризация</h3>
+					<pre class="javascript"><code data-trim data-noescape>
+						const app = express();
+						app.get('/update', (req, res) => {
+						  const user = db.find(req.id);
+						  user = { ...user, ...req.user };
+						  db.save(id, user);
+						});
+					</code></pre>
+				</section>
+				<section>
+					<h2>Prototype pollution</h2>
+				</section>
+				<section>
+					<div class="column2">
+						<pre class="C#"><code data-trim data-noescape>
+							class MyClass {
+								public String toString() {
+									// ...
+								}
+							}
+							var instance = new MyClass();
+							instance.toString();
+						</code></pre>
+						<pre class="javascript"><code data-trim data-noescape>
+							const myClassObject = {
+								toString() {
+									// ...
+								}
+							};
+							const instance = {};
+							instance.__proto__ = myClassObject;
+							instance.toString();
+						</code></pre>
+					</div>
+				</section>
+				<section>
+					<pre class="javascript"><code data-trim data-noescape>
+						const myClassObject = {
+							toString() {
+								// ...
+							}
+						};
+						const instance = {};
+						instance.__proto__ = myClassObject;
+
+						myClassObject.toString = function() { alert(1); };
+					</code></pre>
+				</section>
+				<section>
+					<ul>
+						<li>спасибо за внимание</li>
+						<li>вопросы?</li>
+					</ul>
+				</section>
+
 			</div>
 		</div>
 
@@ -31,10 +621,22 @@
 			// - https://revealjs.com/config/
 			Reveal.initialize({
 				hash: true,
+				slideNumber: true,
 
 				// Learn about plugins: https://revealjs.com/plugins/
 				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes ]
 			});
+		</script>
+		<script>
+			function handleNormalClick() {
+				const t = document.getElementById("#idfield")
+				alert(`you like post ${t.value}`)
+			}
+
+			function handleMalwareClick() {
+				const t = document.getElementsByName("id")[1]
+				alert(`you like post ${t.value}`)
+			}
 		</script>
 	</body>
 </html>
